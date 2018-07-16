@@ -6,8 +6,7 @@ import os
 app_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(app_dir)
 
-import main
-from utils import array_to_img
+import utils
 
 from lambda_proxy.proxy import API
 
@@ -22,14 +21,13 @@ def tile(tile_z, tile_x, tile_y):
     """
     address = 's3://palm-risk-poc/data/glad/rgb/z_{}.vrt'.format(tile_z)
 
-    tile, mask = main.tile(address, tile_x, tile_y, tile_z, None)
+    # read directly from the VRT --> numpy array
+    tile = utils.tile(address, tile_x, tile_y, tile_z)
 
-    # remove unused alpha band
-    tile = tile[0:3]
+    # write out 3 band RGB PNG
+    png = utils.array_to_img(tile)
 
-    tile = array_to_img(tile, 'png', mask=None)
-
-    return ('OK', 'image/png', tile)
+    return ('OK', 'image/png', png)
 
 
 @APP.route('/favicon.ico', methods=['GET'], cors=True)

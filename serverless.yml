@@ -19,6 +19,7 @@ provider:
     VSI_CACHE: TRUE
     VSI_CACHE_SIZE: 536870912
     GDAL_DISABLE_READDIR_ON_OPEN: true
+    GDAL_DATA: /var/task/rasterio/gdal_data
 
 custom:
   apigwBinary:
