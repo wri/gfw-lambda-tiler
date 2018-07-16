@@ -1,11 +1,13 @@
 """
 """
+import sys
+import os
 
-import re
-import json
+app_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(app_dir)
 
-from rio_tiler import main
-from rio_tiler.utils import array_to_img
+import main
+from utils import array_to_img
 
 from lambda_proxy.proxy import API
 
@@ -13,52 +15,21 @@ from lambda_proxy.proxy import API
 APP = API(app_name="lambda-tiler")
 
 
-@APP.route('/bounds', methods=['GET'], cors=True)
-def bounds():
-    """
-    Handle bounds requests
-    """
-
-    query_args = APP.current_request.query_params
-    query_args = query_args if isinstance(query_args, dict) else {}
-
-    address = query_args['url']
-    info = main.bounds(address)
-    return ('OK', 'application/json', json.dumps(info))
-
-
-@APP.route('/tiles/<int:z>/<int:x>/<int:y>.<ext>', methods=['GET'], cors=True)
-def tile(tile_z, tile_x, tile_y, tileformat):
+@APP.route('/tiles/<int:z>/<int:x>/<int:y>.png', methods=['GET'], cors=True)
+def tile(tile_z, tile_x, tile_y):
     """
     Handle tile requests
     """
-    query_args = APP.current_request.query_params
-    query_args = query_args if isinstance(query_args, dict) else {}
+    address = 's3://palm-risk-poc/data/glad/rgb/z_{}.vrt'.format(tile_z)
 
-    address = query_args['url']
+    tile, mask = main.tile(address, tile_x, tile_y, tile_z, None)
 
-    bands = query_args.get('rgb')
-    if bands:
-        bands = tuple(int(s) for s in re.findall(r'\d+', bands))
+    # remove unused alpha band
+    tile = tile[0:3]
 
-    tilesize = query_args.get('tile', 512)
-    tilesize = int(tilesize) if isinstance(tilesize, str) else tilesize
+    tile = array_to_img(tile, 'png', mask=None)
 
-    nodata = query_args.get('nodata')
-    if nodata is not None:
-        nodata = int(nodata)
-
-    alpha = query_args.get('alpha')
-    if alpha is not None:
-        alpha = int(alpha)
-
-    tile, mask = main.tile(address, tile_x, tile_y, tile_z, bands, tilesize=tilesize, nodata=nodata, alpha=alpha)
-    tile = array_to_img(tile, tileformat, mask=mask)
-
-    if tileformat == 'jpg':
-        tileformat = 'jpeg'
-
-    return ('OK', f'image/{tileformat}', tile)
+    return ('OK', 'image/png', tile)
 
 
 @APP.route('/favicon.ico', methods=['GET'], cors=True)

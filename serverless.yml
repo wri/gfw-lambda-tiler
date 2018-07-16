@@ -3,10 +3,16 @@ service: lambda-tiler
 provider:
   name: aws
   runtime: python3.6
-  stage: production
-
-  region: ${opt:region, 'us-east-1'}
-
+  profile: palm
+  region: 'us-east-1'
+  role: arn:aws:iam::838255262149:role/lambda_basic_execution
+  deploymentBucket: palm-risk-poc
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+         - "s3:*"
+      Resource:
+         - 'arn:aws:s3:::palm-risk-poc'
   environment:
     GDAL_CACHEMAX: 75%
     GDAL_TIFF_OVR_BLOCKSIZE: 512
