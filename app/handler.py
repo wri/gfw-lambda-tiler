@@ -19,7 +19,7 @@ def tile(tile_z, tile_x, tile_y):
     """
     Handle tile requests
     """
-    address = 's3://palm-risk-poc/data/glad/rgb/z_{}.vrt'.format(tile_z)
+    address = 's3://gfw2-data/forest_change/umd_landsat_alerts/prod/rgb/z_{}.vrt'.format(tile_z)
 
     # read directly from the VRT --> numpy array
     tile = utils.tile(address, tile_x, tile_y, tile_z)

@@ -3,16 +3,16 @@ service: lambda-tiler
 provider:
   name: aws
   runtime: python3.6
-  profile: palm
+  profile: default
   region: 'us-east-1'
-  role: arn:aws:iam::838255262149:role/lambda_basic_execution
-  deploymentBucket: palm-risk-poc
+  role: arn:aws:iam::838255262149:role/gfw_lambda_tiles
+  deploymentBucket: gfw2-data
   iamRoleStatements:
     - Effect: "Allow"
       Action:
          - "s3:*"
       Resource:
-         - 'arn:aws:s3:::palm-risk-poc'
+         - 'arn:aws:s3:::gfw2-data'
   environment:
     GDAL_CACHEMAX: 75%
     GDAL_TIFF_OVR_BLOCKSIZE: 512
