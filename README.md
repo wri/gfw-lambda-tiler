@@ -1,5 +1,5 @@
 # glad-lambda-tiler
-This builds a lambda endpoint that accepts a Z/X/Y tile ID and returns a map tile PNG. 
+This builds a lambda endpoint that accepts a Z/X/Y tile ID and returns a map tile PNG.
 It uses rasterio to perform a windowed read against VRTs of the GLAD data, which currently live here:
 
 s3://palm-risk-poc/data/glad/rgb/
