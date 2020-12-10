@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  app_test:
+    build:
+      context: .
+    container_name: app_test
+    volumes:
+      - ./app:/app/app:ro
+      - ./tests:/app/tests
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - ENV=test
+      - LOG_LEVEL=debug
+    entrypoint: pytest -vv --cov-report term --cov-report xml:/app/tests/cobertura.xml --cov=app
