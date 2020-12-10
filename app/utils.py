@@ -9,7 +9,7 @@ import rasterio
 from PIL import Image
 from rasterio.windows import Window
 
-from app.lambda_function import TILE_SIZE
+TILE_SIZE: int = 256
 
 logger = logging.getLogger(__name__)
 
@@ -44,8 +44,8 @@ def tile(src_tile: str, window: Window) -> np.ndarray:
     # PIL will read it in both ways, but for some reason
     # only propogates the first band to the other three
     # when in (4, 256, 256)
-    data = np.dstack((data[0], data[1], data[2], data[4]))
-
+    # print(data)
+    data = np.dstack((data[0], data[1], data[2], data[3]))
     return data
 
 

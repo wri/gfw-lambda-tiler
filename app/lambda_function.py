@@ -5,9 +5,8 @@ from rasterio import RasterioIOError
 from rasterio.windows import Window
 
 from app import utils
-from app.utils import get_tile_location
+from app.utils import TILE_SIZE, get_tile_location
 
-TILE_SIZE: int = 256
 ENV: str = os.environ.get("ENV", "dev")
 
 

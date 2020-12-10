@@ -21,7 +21,7 @@ TEST_FILE = os.path.join(fixtures, "test.tif")
 with rasterio.open(TEST_FILE, "w", **profile) as dst:
     for band in bands:
         for i, window in enumerate(windows):
-            data = np.ones(shape=(256, 256), dtype="uint8") * i
+            data = np.ones(shape=(256, 256), dtype="uint8") * (i + 1) * band
             dst.write(data, window=Window(window[0], window[1], 256, 256), indexes=band)
     dst.colorinterp = [
         ColorInterp.red,
